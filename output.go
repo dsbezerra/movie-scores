@@ -6,14 +6,6 @@ import (
 	"io/ioutil"
 )
 
-const (
-	ServiceRotten = "rt"
-	ServiceImdb   = "imdb"
-
-	OpScore  = 1 << 0
-	OpSearch = 1 << 1
-)
-
 type (
 	OutputResult struct {
 		Filename string
