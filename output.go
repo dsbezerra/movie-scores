@@ -25,7 +25,7 @@ func OutputFile(filename string, data interface{}) *OutputResult {
 		return nil
 	}
 
-	tmpfile, err := ioutil.TempFile("./data", filename)
+	tmpfile, err := ioutil.TempFile("", filename)
 	if _, err := tmpfile.Write(contents); err != nil {
 		return nil
 	}

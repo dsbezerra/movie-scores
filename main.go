@@ -37,8 +37,8 @@ type (
 		ID         string  `json:"id"`
 		Title      string  `json:"title"`
 		Poster     string  `json:"poster"`
-		Score      float32 `json:"score"`
-		ScoreClass string  `json:"score_class"`
+		Score      float32 `json:"score,omitempty"`
+		ScoreClass string  `json:"score_class,omitempty"`
 		Year       uint    `json:"year"`
 	}
 
