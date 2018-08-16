@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 )
 
 type (
@@ -25,7 +25,7 @@ func OutputFile(filename string, data interface{}) *OutputResult {
 		return nil
 	}
 
-	tmpfile, err := ioutil.TempFile("", filename)
+	tmpfile, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY, 0755)
 	if _, err := tmpfile.Write(contents); err != nil {
 		return nil
 	}
