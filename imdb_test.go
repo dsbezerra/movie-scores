@@ -12,7 +12,6 @@ func TestImdbSearch(t *testing.T) {
 		t.Error(err)
 	}
 
-	expectedQ := "iron_man_2008"
 	expectedFirstItem := &imdbSearchItem{
 		ID:      "tt0371746",
 		Label:   "Iron Man",
@@ -20,22 +19,15 @@ func TestImdbSearch(t *testing.T) {
 		Year:    2008,
 	}
 
-	if len(result.Data) == 0 {
-		t.Errorf("Data was incorrect, got: 0, expected > 0")
+	if len(result) == 0 {
+		t.Errorf("Size was incorrect, got: 0, expected > 0")
 	}
 
-	if expectedQ != result.Query {
-		t.Errorf("Query was incorrect, got: %s, expected: %s.", result.Query, query)
-	}
-
-	if !isSearchItemEqual(*expectedFirstItem, result.Data[0]) {
-		t.Errorf("First item was incorrect, got: %s, expected: %s.", result.Data[0].ID, expectedFirstItem.ID)
+	if !isSearchItemEqual(result[0], *expectedFirstItem) {
+		t.Errorf("First item was incorrect, got: %s, expected: %s.", result[0].ID, expectedFirstItem.ID)
 	}
 }
 
-func isSearchItemEqual(a imdbSearchItem, b imdbSearchItem) bool {
-	return (a.ID == b.ID &&
-		a.Label == b.Label &&
-		a.Subline == b.Subline &&
-		a.Year == b.Year)
+func isSearchItemEqual(a SearchResult, b imdbSearchItem) bool {
+	return a.ID == b.ID
 }

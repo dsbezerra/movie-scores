@@ -13,8 +13,8 @@ type (
 	}
 )
 
-// OutputToFile outputs struct data to a JSON file.
-func OutputToFile(filename string, data interface{}) *OutputResult {
+// OutputFile outputs struct data to a JSON file.
+func OutputFile(filename string, data interface{}) *OutputResult {
 	if filename == "" || data == nil {
 		return nil
 	}

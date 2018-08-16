@@ -17,12 +17,12 @@ func TestRottenSearch(t *testing.T) {
 		URL:  "/m/iron_man",
 	}
 
-	if result.MovieCount == 0 {
+	if len(result) == 0 {
 		t.Errorf("Movie count was incorrect, got: 0, expected > 0")
 	}
 
 	expectedFound := false
-	for _, movie := range result.Movies {
+	for _, movie := range result {
 		expectedFound = isMovieEqual(movie, expectedMovieInList)
 		if expectedFound {
 			break
@@ -34,8 +34,8 @@ func TestRottenSearch(t *testing.T) {
 	}
 }
 
-func isMovieEqual(a rtMovie, b rtMovie) bool {
-	return (a.Name == b.Name &&
-		a.URL == b.URL &&
+func isMovieEqual(a SearchResult, b rtMovie) bool {
+	return (a.Title == b.Name &&
+		a.ID == b.URL &&
 		a.Year == b.Year)
 }

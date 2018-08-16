@@ -7,6 +7,8 @@ import (
 	"strings"
 )
 
+const IMDB = "imdb"
+
 const imdbApiBaseURL = "https://v2.sg.media-imdb.com/suggests/"
 
 type (
@@ -49,7 +51,7 @@ func NewIMDb() *IMDb {
 }
 
 // Search returns movies for a given query from IMDB suggests API
-func (imdb *IMDb) Search(query string) (*imdbSearchResult, error) {
+func (imdb *IMDb) Search(query string) ([]SearchResult, error) {
 	if query == "" {
 		return nil, nil
 	}
@@ -79,7 +81,27 @@ func (imdb *IMDb) Search(query string) (*imdbSearchResult, error) {
 		return nil, err
 	}
 
-	return &result, nil
+	r := make([]SearchResult, 0)
+	for _, item := range result.Data {
+		sr := SearchResult{
+			Provider: IMDB,
+			ID:       item.ID,
+			Title:    item.Label,
+			Year:     item.Year,
+		}
+
+		if len(item.Image) > 0 {
+			sr.Poster = getString(item.Image[0])
+		}
+
+		r = append(r, sr)
+	}
+
+	return r, nil
+}
+
+func (imdb *IMDb) Score(id string) (*ScoreResult, error) {
+	return nil, nil
 }
 
 func (searchResult *imdbSearchResult) toOutputFormat() []imdbSearchOutputFormat {
@@ -92,15 +114,18 @@ func (searchResult *imdbSearchResult) toOutputFormat() []imdbSearchOutputFormat 
 		}
 
 		if len(item.Image) > 0 {
-			target := item.Image[0]
-
-			typ := reflect.TypeOf(target)
-			if typ != nil && typ.Kind() == reflect.String {
-				r.Poster = reflect.ValueOf(target).String()
-			}
+			r.Poster = getString(item.Image[0])
 		}
 
 		result = append(result, r)
 	}
 	return result
+}
+
+func getString(val interface{}) string {
+	typ := reflect.TypeOf(val)
+	if typ != nil && typ.Kind() == reflect.String {
+		return reflect.ValueOf(val).String()
+	}
+	return ""
 }
