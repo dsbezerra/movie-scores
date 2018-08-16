@@ -30,7 +30,7 @@ type (
 		Provider   string  `json:"provider"`
 		ID         string  `json:"id"`
 		Score      float32 `json:"score"`
-		ScoreClass string  `json:"score_class"`
+		ScoreClass string  `json:"score_class,omitempty"`
 	}
 	SearchResult struct {
 		Provider   string  `json:"provider"`
@@ -161,7 +161,7 @@ func checkArgs() *Context {
 	}
 }
 
-func run(ctx *Context) {
+func (ctx *Context) Run() {
 	var p Provider
 
 	if ctx.Provider == IMDB {
@@ -205,5 +205,5 @@ func Score(p Provider, id string) (*ScoreResult, error) {
 
 func main() {
 	ctx := checkArgs()
-	run(ctx)
+	ctx.Run()
 }

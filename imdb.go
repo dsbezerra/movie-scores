@@ -1,14 +1,19 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"reflect"
+	"strconv"
 	"strings"
+
+	"github.com/PuerkitoBio/goquery"
 )
 
 const IMDB = "imdb"
 
+const imdbBaseURL = "https://www.imdb.com/"
 const imdbApiBaseURL = "https://v2.sg.media-imdb.com/suggests/"
 
 type (
@@ -101,7 +106,35 @@ func (imdb *IMDb) Search(query string) ([]SearchResult, error) {
 }
 
 func (imdb *IMDb) Score(id string) (*ScoreResult, error) {
-	return nil, nil
+	if id == "" {
+		return nil, errors.New("id is empty")
+	}
+
+	fullURL := imdbBaseURL + "title/" + id
+	body, err := Get(fullURL)
+	if err != nil {
+		return nil, err
+	}
+
+	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(body))
+	if err != nil {
+		return nil, err
+	}
+
+	container := doc.Find("#title-overview-widget")
+	scoreText := container.Find("div.ratings_wrapper > div.imdbRating > div.ratingValue > strong > span").Text()
+	scoreText = strings.TrimSpace(scoreText)
+
+	number, err := strconv.ParseFloat(scoreText, 32)
+	if err != nil {
+		return nil, err
+	}
+	result := &ScoreResult{}
+	result.ID = id
+	result.Provider = IMDB
+	result.Score = float32(number)
+
+	return result, nil
 }
 
 func (searchResult *imdbSearchResult) toOutputFormat() []imdbSearchOutputFormat {
