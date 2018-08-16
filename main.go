@@ -161,7 +161,7 @@ func checkArgs() *Context {
 	}
 }
 
-func Run(ctx *Context) {
+func run(ctx *Context) {
 	var p Provider
 
 	if ctx.Provider == IMDB {
@@ -205,5 +205,5 @@ func Score(p Provider, id string) (*ScoreResult, error) {
 
 func main() {
 	ctx := checkArgs()
-	Run(ctx)
+	run(ctx)
 }
