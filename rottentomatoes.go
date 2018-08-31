@@ -12,18 +12,19 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-const ROTTEN_TOMATOES = "rotten"
+// RottenT represents an abbreviation or short name for the RottenTomatoes website
+const RottenT = "rotten"
 
 const rottenBaseURL = "https://www.rottentomatoes.com"
-const rottenApiBaseURL = rottenBaseURL + "/napi/"
+const rottenAPIBaseURL = rottenBaseURL + "/napi/"
 
-const CLASS_ROTTEN = "rotten"
-const CLASS_FRESH = "fresh"
-const CLASS_CERTIFIED_FRESH = "certified_fresh"
+const scoreClassRotten = "rotten"
+const scoreClassFresh = "fresh"
+const scoreClassCertifiedFresh = "certified_fresh"
 
 type (
-	RottenTomatoes struct {
-	}
+	// RottenTomatoes represents an IMDB provider
+	RottenTomatoes struct{}
 
 	/* Response struct for url:
 	   https://www.rottentomatoes.com/napi/search?query="something"
@@ -102,7 +103,7 @@ type (
 	}
 )
 
-// NewRottenTomatoes Gives an instance of rotten struct
+// NewRottenTomatoes creates a new instance of RottenTomatoes provider
 func NewRottenTomatoes() *RottenTomatoes {
 	return &RottenTomatoes{}
 }
@@ -114,7 +115,7 @@ func (rt *RottenTomatoes) Search(query string) ([]SearchResult, error) {
 	}
 
 	query = url.QueryEscape(query)
-	url := rottenApiBaseURL + "search/?limit=5&query=" + query
+	url := rottenAPIBaseURL + "search/?limit=5&query=" + query
 
 	body, err := Get(url)
 	if err != nil {
@@ -133,7 +134,7 @@ func (rt *RottenTomatoes) Search(query string) ([]SearchResult, error) {
 			ID:         movie.URL,
 			Title:      movie.Name,
 			Poster:     movie.Image,
-			Provider:   ROTTEN_TOMATOES,
+			Provider:   RottenT,
 			Score:      float32(movie.MeterScore),
 			ScoreClass: movie.MeterClass,
 			Year:       movie.Year,
@@ -143,6 +144,7 @@ func (rt *RottenTomatoes) Search(query string) ([]SearchResult, error) {
 	return r, nil
 }
 
+// Score gets the score for the given rotten page path as id
 func (rt *RottenTomatoes) Score(id string) (*ScoreResult, error) {
 	if id == "" {
 		return nil, nil
@@ -173,17 +175,17 @@ func (rt *RottenTomatoes) Score(id string) (*ScoreResult, error) {
 	icon := container.Find("span.meter-tomato.icon")
 	val, exists := icon.Attr("class")
 	if exists {
-		if strings.Contains(val, CLASS_ROTTEN) {
-			result.MeterClass = CLASS_ROTTEN
-		} else if strings.Contains(val, CLASS_FRESH) {
-			result.MeterClass = CLASS_FRESH
-		} else if strings.Contains(val, CLASS_CERTIFIED_FRESH) {
-			result.MeterClass = CLASS_CERTIFIED_FRESH
+		if strings.Contains(val, scoreClassRotten) {
+			result.MeterClass = scoreClassRotten
+		} else if strings.Contains(val, scoreClassFresh) {
+			result.MeterClass = scoreClassFresh
+		} else if strings.Contains(val, scoreClassCertifiedFresh) {
+			result.MeterClass = scoreClassCertifiedFresh
 		}
 	}
 
 	return &ScoreResult{
-		Provider:   ROTTEN_TOMATOES,
+		Provider:   RottenT,
 		ID:         result.Path,
 		Score:      float32(result.MeterScore),
 		ScoreClass: result.MeterClass,

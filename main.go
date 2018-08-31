@@ -14,9 +14,10 @@ var opScore = "score"
 var opSearch = "search"
 
 var supportedOperations = []string{opScore, opSearch}
-var supportedProviders = []string{IMDB, ROTTEN_TOMATOES}
+var supportedProviders = []string{IMDB, RottenT}
 
 type (
+	// Context represents the main application context
 	Context struct {
 		Provider  string
 		Operation string
@@ -26,12 +27,16 @@ type (
 	}
 
 	// TODO: Make one result struct for both operations?
+
+	// ScoreResult represents the result for a score operation
 	ScoreResult struct {
 		Provider   string  `json:"provider"`
 		ID         string  `json:"id"`
 		Score      float32 `json:"score"`
 		ScoreClass string  `json:"score_class,omitempty"`
 	}
+
+	// SearchResult represents the result for a search operation
 	SearchResult struct {
 		Provider   string  `json:"provider"`
 		ID         string  `json:"id"`
@@ -42,6 +47,7 @@ type (
 		Year       uint    `json:"year"`
 	}
 
+	// Provider is an interface used to reduce equal code
 	Provider interface {
 		Score(id string) (*ScoreResult, error)
 		Search(query string) ([]SearchResult, error)
@@ -65,7 +71,7 @@ func Get(url string) ([]byte, error) {
 	defer response.Body.Close()
 	if response.StatusCode != 200 {
 		// TODO: better handle this
-		return nil, errors.New("response code was not sucessfull")
+		return nil, errors.New("response code was not successfull")
 	}
 
 	body, err := ioutil.ReadAll(response.Body)
@@ -161,12 +167,12 @@ func checkArgs() *Context {
 	}
 }
 
-func (ctx *Context) Run() {
+func (ctx *Context) run() {
 	var p Provider
 
 	if ctx.Provider == IMDB {
 		p = NewIMDb()
-	} else if ctx.Provider == ROTTEN_TOMATOES {
+	} else if ctx.Provider == RottenT {
 		p = NewRottenTomatoes()
 	}
 
@@ -197,5 +203,5 @@ func (ctx *Context) Run() {
 
 func main() {
 	ctx := checkArgs()
-	ctx.Run()
+	ctx.run()
 }

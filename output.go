@@ -7,6 +7,8 @@ import (
 )
 
 type (
+	// OutputResult represents the output of the application, which is a
+	// text file using JSON as its format.
 	OutputResult struct {
 		Filename string
 		Data     string

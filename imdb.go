@@ -12,14 +12,15 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+// IMDB represents an abbreviation or short name for the Internet Movie Database website
 const IMDB = "imdb"
 
 const imdbBaseURL = "https://www.imdb.com/"
-const imdbApiBaseURL = "https://v2.sg.media-imdb.com/suggests/"
+const imdbAPIBaseURL = "https://v2.sg.media-imdb.com/suggests/"
 
 type (
-	IMDb struct {
-	}
+	// IMDb represents an IMDB provider
+	IMDb struct{}
 
 	imdbSearchResult struct {
 		V     int              `json:"v"`
@@ -52,6 +53,7 @@ type (
 	}
 )
 
+// NewIMDb creates a new instance of IMDb provider
 func NewIMDb() *IMDb {
 	return &IMDb{}
 }
@@ -62,7 +64,7 @@ func (imdb *IMDb) Search(query string) ([]SearchResult, error) {
 		return nil, nil
 	}
 
-	fullURL := imdbApiBaseURL + string(query[0]) + "/"
+	fullURL := imdbAPIBaseURL + string(query[0]) + "/"
 
 	query = strings.Replace(query, " ", "_", -1)
 	fullURL += query + ".json"
@@ -106,6 +108,7 @@ func (imdb *IMDb) Search(query string) ([]SearchResult, error) {
 	return r, nil
 }
 
+// Score gets the score for the given imdb id
 func (imdb *IMDb) Score(id string) (*ScoreResult, error) {
 	if id == "" {
 		return nil, errors.New("id is empty")
@@ -127,7 +130,7 @@ func (imdb *IMDb) Score(id string) (*ScoreResult, error) {
 	scoreText = strings.TrimSpace(scoreText)
 
 	if scoreText == "" {
-		return nil, errors.New(fmt.Sprintf("Couldn't find score for movie %s", id))
+		return nil, fmt.Errorf("Couldn't find score for movie %s", id)
 	}
 
 	number, err := strconv.ParseFloat(scoreText, 32)
