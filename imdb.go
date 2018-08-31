@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
@@ -125,15 +126,20 @@ func (imdb *IMDb) Score(id string) (*ScoreResult, error) {
 	scoreText := container.Find("div.ratings_wrapper > div.imdbRating > div.ratingValue > strong > span").Text()
 	scoreText = strings.TrimSpace(scoreText)
 
+	if scoreText == "" {
+		return nil, errors.New(fmt.Sprintf("Couldn't find score for movie %s", id))
+	}
+
 	number, err := strconv.ParseFloat(scoreText, 32)
 	if err != nil {
 		return nil, err
 	}
-	result := &ScoreResult{}
-	result.ID = id
-	result.Provider = IMDB
-	result.Score = float32(number)
 
+	result := &ScoreResult{
+		ID:       id,
+		Provider: IMDB,
+		Score:    float32(number),
+	}
 	return result, nil
 }
 

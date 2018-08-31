@@ -195,14 +195,6 @@ func (ctx *Context) Run() {
 	}
 }
 
-func Search(p Provider, query string) ([]SearchResult, error) {
-	return p.Search(query)
-}
-
-func Score(p Provider, id string) (*ScoreResult, error) {
-	return p.Score(id)
-}
-
 func main() {
 	ctx := checkArgs()
 	ctx.Run()
