@@ -12,12 +12,12 @@ echo Building for Linux...
 env GOOS=linux go build -o movie-score-v2-linux
 echo Building for Linux completed!
 
-echo Moving binaries to amenic-go/bin...
-REM Delete previous builds in bin folder of amenic-go.
-rm -f ../amenic-go/bin/movie-score-v2 && rm -f ../amenic-go/bin/movie-score-v2.exe
+echo Moving binaries to amenic-api/worker/bin...
+REM Delete previous builds in bin folder of amenic-api/worker aka amenic-go.
+rm -f ../amenic-api/worker/bin/movie-score-v2 && rm -f ../amenic-api/worker/bin/movie-score-v2.exe
 
-REM Movie all new builds to the bing folder of amenic-go.
-mv ./movie-score-v2.exe ../amenic-go/bin && mv ./movie-score-v2-linux ../amenic-go/bin
+REM Movie all new builds to the bin folder of amenic-api/worker aka amenic-go.
+mv ./movie-score-v2.exe ../amenic-api/worker/bin && mv ./movie-score-v2-linux ../amenic-api/worker/bin
 
 REM Script completed.
 echo Move completed.
